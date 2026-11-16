@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIP-SKPLT &amp; SKPLH | Tim Mutasi OSDM</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: #fff !important; }
+      .print-shadow-none { box-shadow: none !important; border: 1px solid #cbd5e1 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- TOP NAVBAR -->
+  <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white shadow-lg no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-xl bg-amber-400/15 border border-amber-400/30 flex items-center justify-center text-amber-400 shrink-0">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="px-2 py-0.5 text-[11px] font-bold tracking-wider uppercase rounded bg-amber-400 text-slate-950">Tim Mutasi OSDM</span>
+            <span id="connectionBadge" class="px-2 py-0.5 text-[11px] font-medium rounded bg-slate-800 text-slate-300 border border-slate-700 flex items-center gap-1.5">
+              <span id="connectionDot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span id="connectionText">Mode Lokal (Siap Dihubungkan)</span>
+            </span>
+          </div>
+          <h1 class="text-lg sm:text-xl font-bold tracking-tight mt-1">
+            SIP-SKPLT &amp; SKPLH <span class="text-slate-300 font-normal">| Penomoran SK Plt &amp; Plh</span>
+          </h1>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2">
+        <button onclick="openModal('create')" class="px-4 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-semibold text-sm shadow-sm transition flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Tambah / Booking SK
+        </button>
+        <button onclick="openSettingsModal()" class="px-3.5 py-2 rounded-lg bg-blue-900/70 hover:bg-blue-800 text-blue-100 border border-blue-700/60 font-medium text-sm transition flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4 text-amber-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          Koneksi Google Sheets
+        </button>
+        <button onclick="exportCSV()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 font-medium text-sm transition flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Ekspor CSV
+        </button>
+        <button onclick="window.print()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 font-medium text-sm transition flex items-center gap-1.5 cursor-pointer">
+          <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          Cetak
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 space-y-6">
+
+    <!-- PRINT HEADER (ONLY VISIBLE ON PRINT) -->
+    <div class="hidden print:block border-b-2 border-slate-800 pb-3 mb-4">
+      <h2 class="text-xl font-bold text-slate-900">BUKU AGENDA PENOMORAN SK PLT &amp; SK PLH</h2>
+      <p class="text-sm text-slate-600">Tim Mutasi OSDM — Dicetak pada: <span id="printDate"></span></p>
+    </div>
+
+    <!-- STATS CARDS -->
+    <section class="grid grid-cols-2 lg:grid-cols-5 gap-3.5 no-print">
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Nomor Berikutnya</p>
+        <p id="statNextNum" class="text-2xl font-bold font-mono-code text-blue-900 mt-1">29</p>
+        <p id="statNextPreview" class="text-[11px] text-slate-500 font-mono-code truncate mt-0.5">PLT-29/MS/11/2026</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Agenda</p>
+        <p id="statTotal" class="text-2xl font-bold text-slate-800 mt-1">0</p>
+        <p class="text-[11px] text-slate-400 mt-0.5">Seluruh SK tercatat</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">SK Plt / SK Plh</p>
+        <p class="text-2xl font-bold text-slate-800 mt-1">
+          <span id="statPlt" class="text-indigo-700">0</span>
+          <span class="text-slate-300 font-normal mx-1">/</span>
+          <span id="statPlh" class="text-cyan-700">0</span>
+        </p>
+        <p class="text-[11px] text-slate-400 mt-0.5">Pelaksana Tugas / Harian</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Sudah Terbit</p>
+        <p id="statTerbit" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+        <p class="text-[11px] text-slate-400 mt-0.5">SK final diterbitkan</p>
+      </div>
+      <div class="bg-amber-50/70 rounded-xl p-4 border border-amber-200 shadow-sm col-span-2 lg:col-span-1">
+        <p class="text-xs font-semibold text-amber-800 uppercase tracking-wider">Nomor Dibooking</p>
+        <p id="statBooking" class="text-2xl font-bold text-amber-600 mt-1">0</p>
+        <p id="statBookingList" class="text-[11px] text-amber-700 font-mono-code truncate mt-0.5">-</p>
+      </div>
+    </section>
+
+    <!-- BOOKING REMINDER BANNER -->
+    <div id="bookingBanner" class="hidden bg-amber-50 border border-amber-200 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 no-print">
+      <div class="flex items-start sm:items-center gap-2.5">
+        <span class="p-1.5 rounded-lg bg-amber-100 text-amber-700 shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </span>
+        <div class="text-sm text-amber-900">
+          <span class="font-semibold">Perhatian Nomor Dibooking:</span>
+          <span id="bookingBannerText">Terdapat nomor yang masih berstatus Dibooking.</span>
+        </div>
+      </div>
+      <button onclick="filterByStatus('Dibooking')" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shrink-0 cursor-pointer self-start sm:self-auto">
+        Tampilkan Nomor Booking
+      </button>
+    </div>
+
+    <!-- SEARCH & FILTER BAR -->
+    <section class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm no-print">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
+        <div class="md:col-span-5 relative">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" id="searchInput" oninput="renderTable()" placeholder="Cari nomor SK, nama pejabat, NIP, jabatan, unit kerja, PIC..." class="w-full pl-10 pr-4 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" />
+        </div>
+        <div class="md:col-span-2">
+          <select id="filterJenis" onchange="renderTable()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="ALL">Semua Jenis SK</option>
+            <option value="SK Plt">SK Plt</option>
+            <option value="SK Plh">SK Plh</option>
+          </select>
+        </div>
+        <div class="md:col-span-2">
+          <select id="filterStatus" onchange="renderTable()" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+            <option value="ALL">Semua Status</option>
+            <option value="Terbit">Terbit</option>
+            <option value="Dibooking">Dibooking</option>
+          </select>
+        </div>
+        <div class="md:col-span-3 flex items-center justify-end gap-2">
+          <button onclick="resetFilters()" class="px-3 py-2 text-xs font-medium text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-lg transition cursor-pointer">
+            Reset Filter
+          </button>
+          <button onclick="syncFromServer()" id="btnRefresh" class="px-3.5 py-2 text-xs font-semibold text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-lg transition flex items-center gap-1.5 cursor-pointer">
+            <svg id="refreshIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Muat Ulang
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- DATA TABLE -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden print-shadow-none">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-800 text-white text-xs uppercase tracking-wider">
+              <th class="py-3 px-3.5 font-semibold w-14 text-center">No</th>
+              <th class="py-3 px-3.5 font-semibold">Nomor SK Lengkap</th>
+              <th class="py-3 px-3.5 font-semibold w-24 text-center">Jenis</th>
+              <th class="py-3 px-3.5 font-semibold w-28 text-center">Status</th>
+              <th class="py-3 px-3.5 font-semibold w-28">Tanggal SK</th>
+              <th class="py-3 px-3.5 font-semibold">Pejabat &amp; NIP</th>
+              <th class="py-3 px-3.5 font-semibold">Jabatan Plt/Plh &amp; Unit Kerja</th>
+              <th class="py-3 px-3.5 font-semibold">PIC / Keterangan</th>
+              <th class="py-3 px-3.5 font-semibold text-right no-print w-36">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody" class="divide-y divide-slate-200 text-sm">
+            <!-- Rows injected via JS -->
+          </tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="hidden py-12 text-center px-4">
+        <p class="text-slate-500 font-medium">Tidak ada data penomoran SK yang sesuai dengan filter.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 no-print">
+    SIP-SKPLT &amp; SKPLH — Tim Mutasi OSDM &bull; Format Penomoran Semi-Otomatis (<span class="font-mono-code">PLT-&lt;nomor&gt;/MS/&lt;bulan&gt;/&lt;tahun&gt;</span>)
+  </footer>
+
+  <!-- MODAL: TAMBAH / BOOKING / EDIT SK -->
+  <div id="skModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 my-8">
+      <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <div>
+          <h3 id="modalTitle" class="text-lg font-bold">Tambah / Booking Nomor SK</h3>
+          <p class="text-xs text-slate-300 mt-0.5">Nomor urut terisi otomatis, kode jenis surat bebas diketik sesuai kebutuhan</p>
+        </div>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="skForm" onsubmit="handleFormSubmit(event)" class="p-6 space-y-5 max-h-[82vh] overflow-y-auto">
+        <input type="hidden" id="editId" />
+
+        <!-- MODE SELECTOR: TERBIT vs BOOKING -->
+        <div class="grid grid-cols-2 gap-3 p-1 bg-slate-100 rounded-xl border border-slate-200">
+          <button type="button" id="btnModeTerbit" onclick="setFormStatus('Terbit')" class="py-2 px-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 cursor-pointer bg-emerald-600 text-white shadow-xs">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            Langsung Terbit SK
+          </button>
+          <button type="button" id="btnModeBooking" onclick="setFormStatus('Dibooking')" class="py-2 px-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:text-slate-900">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Booking Nomor Dulu
+          </button>
+        </div>
+        <input type="hidden" id="formStatus" value="Terbit" />
+
+        <!-- JENIS SK & TANGGAL -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Jenis SK</label>
+            <select id="formJenis" onchange="onJenisChange()" class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none font-medium">
+              <option value="SK Plt">SK Plt (Pelaksana Tugas)</option>
+              <option value="SK Plh">SK Plh (Pelaksana Harian)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Tanggal SK / Booking</label>
+            <input type="date" id="formTanggal" onchange="onDateChange()" required class="w-full px-3.5 py-2.5 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+        </div>
+
+        <!-- PENOMORAN SEMI-OTOMATIS (3 BAGIAN) -->
+        <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-blue-950 uppercase tracking-wider">Format Nomor SK (Semi-Otomatis &amp; Bebas Edit)</span>
+            <span id="dupWarning" class="hidden text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200">Nomor urut sudah dipakai!</span>
+          </div>
+
+          <div class="grid grid-cols-12 gap-2.5">
+            <div class="col-span-4 sm:col-span-3">
+              <label class="block text-[11px] font-medium text-slate-600 mb-1">Awalan</label>
+              <input type="text" id="formAwalan" oninput="updateNumberPreview()" value="PLT-" placeholder="PLT-" class="w-full px-3 py-2 text-sm font-mono-code font-semibold border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+            </div>
+            <div class="col-span-4 sm:col-span-3">
+              <label class="block text-[11px] font-medium text-slate-600 mb-1">Nomor Urut</label>
+              <input type="text" id="formNomorUrut" oninput="updateNumberPreview()" required placeholder="29" class="w-full px-3 py-2 text-sm font-mono-code font-bold text-blue-900 border border-blue-400 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+            </div>
+            <div class="col-span-12 sm:col-span-6">
+              <label class="block text-[11px] font-medium text-slate-600 mb-1">Kode Jenis Surat &amp; Bulan/Tahun (Bebas Ketik)</label>
+              <input type="text" id="formKodeSurat" oninput="updateNumberPreview()" required placeholder="/MS/11/2026" class="w-full px-3 py-2 text-sm font-mono-code border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none" />
+            </div>
+          </div>
+
+          <!-- QUICK TEMPLATE CHIPS -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+            <span class="text-[11px] text-slate-500 mr-1">Template cepat:</span>
+            <button type="button" onclick="applyKodeTemplate('/MS/11/2026')" class="px-2 py-0.5 text-[11px] font-mono-code bg-white hover:bg-blue-100 text-slate-700 border border-slate-300 rounded cursor-pointer">/MS/11/2026</button>
+            <button type="button" onclick="applyKodeTemplate('/MS/12/2026')" class="px-2 py-0.5 text-[11px] font-mono-code bg-white hover:bg-blue-100 text-slate-700 border border-slate-300 rounded cursor-pointer">/MS/12/2026</button>
+            <button type="button" onclick="applyKodeTemplate('/KP.04.01/MS/11/2026')" class="px-2 py-0.5 text-[11px] font-mono-code bg-white hover:bg-blue-100 text-slate-700 border border-slate-300 rounded cursor-pointer">/KP.04.01/MS/11/2026</button>
+            <button type="button" onclick="applyKodeTemplate('/KP.04.02/MS/11/2026')" class="px-2 py-0.5 text-[11px] font-mono-code bg-white hover:bg-blue-100 text-slate-700 border border-slate-300 rounded cursor-pointer">/KP.04.02/MS/11/2026</button>
+          </div>
+
+          <!-- LIVE PREVIEW -->
+          <div class="bg-white rounded-lg px-3.5 py-2.5 border border-blue-200 flex items-center justify-between">
+            <span class="text-xs text-slate-500">Hasil Nomor SK:</span>
+            <span id="previewNomorLengkap" class="text-base font-bold font-mono-code text-blue-950">PLT-29/MS/11/2026</span>
+          </div>
+        </div>
+
+        <!-- DETAIL PEJABAT & JABATAN -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+              Nama Pejabat <span id="reqPejabat" class="text-red-500">*</span>
+            </label>
+            <input type="text" id="formNamaPejabat" placeholder="Contoh: Andri Kurniawan Amarullah" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">NIP (18 Digit)</label>
+            <input type="text" id="formNip" placeholder="Contoh: 199107282012061001" class="w-full px-3.5 py-2 text-sm font-mono-code border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Jabatan Plt / Plh</label>
+            <input type="text" id="formJabatan" placeholder="Contoh: Plt. Kepala Subbagian Tata Usaha" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Unit Kerja</label>
+            <input type="text" id="formUnitKerja" placeholder="Contoh: Biro Umum" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+              Nama Pembooking / PIC <span id="reqPic" class="text-amber-600 hidden">*</span>
+            </label>
+            <input type="text" id="formPic" placeholder="Contoh: Rina / Andi / Dimas (Tim Mutasi)" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">Keterangan / Perihal</label>
+            <input type="text" id="formKeterangan" placeholder="Catatan tambahan atau keperluan SK" class="w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-200">
+          <button type="button" onclick="closeModal()" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition cursor-pointer">Batal</button>
+          <button type="submit" id="btnSubmitForm" class="px-5 py-2 text-sm font-semibold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-sm transition cursor-pointer">
+            Simpan Data SK
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: PENGATURAN KONEKSI GOOGLE APPS SCRIPT -->
+  <div id="settingsModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden border border-slate-200">
+      <div class="bg-slate-900 text-white px-6 py-4 flex items-center justify-between">
+        <h3 class="text-base font-bold">Koneksi Database Google Sheets (Apps Script)</h3>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white p-1 rounded-lg cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Tempelkan <strong>URL Aplikasi Web (Web App URL)</strong> dari hasil <em>Deploy</em> Google Apps Script Anda di bawah ini agar aplikasi di GitHub Pages langsung membaca dan menyimpan data ke Google Sheets secara real-time.
+        </p>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">URL Web App Google Apps Script</label>
+          <input type="url" id="inputApiUrl" placeholder="https://script.google.com/macros/s/AKfycb.../exec" class="w-full px-3.5 py-2.5 text-xs font-mono-code border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none" />
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+          <button type="button" onclick="clearApiUrl()" class="px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-50 rounded-lg cursor-pointer">
+            Putuskan Koneksi
+          </button>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg cursor-pointer">Tutup</button>
+            <button type="button" onclick="saveApiUrl()" class="px-4 py-2 text-xs font-semibold text-white bg-blue-900 hover:bg-blue-800 rounded-lg shadow-sm cursor-pointer">
+              Simpan &amp; Hubungkan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden transform transition-all duration-300">
+    <div id="toastBox" class="px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2.5 bg-slate-900 text-white">
+      <span id="toastMsg">Berhasil</span>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. KONFIGURASI BACKEND GOOGLE APPS SCRIPT
+    // Jika sudah deploy Code.gs, tempel URL Web App di bawah ini (atau lewat UI)
+    // =========================================================================
+    const DEFAULT_API_URL = "";
+    const STORAGE_KEY_DATA = "sip_skplt_osdm_records_v2";
+    const STORAGE_KEY_API  = "sip_skplt_osdm_api_url_v2";
+
+    // Data awal 28 nomor riil milik Tim Mutasi OSDM (dari DB_Penomoran_SK_OSDM)
+    const INITIAL_DATA = [
+  {
+    "id": "SK-001",
+    "awalan": "PLT-",
+    "nomor_urut": "1",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-1/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "Drs. Hendra Wijaya, M.Si.",
+    "nip": "197405121999031002",
+    "jabatan_plt_plh": "Plt. Kepala Bagian Perencanaan dan Mutasi",
+    "unit_kerja": "Biro Organisasi dan SDM",
+    "pic_booking": "Rina (Tim Mutasi)",
+    "keterangan": "Mengisi kekosongan jabatan definitif",
+    "updated_at": "2026-01-12T09:15:00.000Z"
+  },
+  {
+    "id": "SK-002",
+    "awalan": "PLT-",
+    "nomor_urut": "2",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-2/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "Siti Nurhaliza, S.Sos., M.AP.",
+    "nip": "198108242006042003",
+    "jabatan_plt_plh": "Plh. Kepala Subbagian Tata Usaha",
+    "unit_kerja": "Sekretariat Jenderal",
+    "pic_booking": "Andi (Tim Mutasi)",
+    "keterangan": "Pejabat definitif mengikuti Diklat PIM II",
+    "updated_at": "2026-02-03T10:30:00.000Z"
+  },
+  {
+    "id": "SK-003",
+    "awalan": "PLT-",
+    "nomor_urut": "3",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-3/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "Bambang Sutrisno, S.H., M.H.",
+    "nip": "197811092003121001",
+    "jabatan_plt_plh": "Plt. Koordinator Kelompok Substansi Pengembangan",
+    "unit_kerja": "Pusat Pengembangan SDM",
+    "pic_booking": "Rina (Tim Mutasi)",
+    "keterangan": "Perpanjangan masa tugas Plt 3 bulan",
+    "updated_at": "2026-03-18T14:20:00.000Z"
+  },
+  {
+    "id": "SK-004",
+    "awalan": "PLT-",
+    "nomor_urut": "4",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-4/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "Plh. Kepala Bagian Umum",
+    "unit_kerja": "Biro Umum",
+    "pic_booking": "Dimas (Tim Mutasi)",
+    "keterangan": "Booking untuk penugasan dinas luar pejabat definitif minggu depan",
+    "updated_at": "2026-11-16T08:45:00.000Z"
+  },
+  {
+    "id": "SK-005",
+    "awalan": "PLT-",
+    "nomor_urut": "5",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-5/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "Plt. Kepala Balai Rehabilitasi Sosial",
+    "unit_kerja": "Direktorat Jenderal Rehabilitasi Sosial",
+    "pic_booking": "Andi (Tim Mutasi)",
+    "keterangan": "Menunggu paraf koordinasi pimpinan",
+    "updated_at": "2026-11-16T11:10:00.000Z"
+  },
+  {
+    "id": "SK-006",
+    "awalan": "PLT-",
+    "nomor_urut": "6",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-6/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-007",
+    "awalan": "PLT-",
+    "nomor_urut": "7",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-7/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-008",
+    "awalan": "PLT-",
+    "nomor_urut": "8",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-8/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-009",
+    "awalan": "PLT-",
+    "nomor_urut": "9",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-9/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-010",
+    "awalan": "PLT-",
+    "nomor_urut": "10",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-10/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-011",
+    "awalan": "PLT-",
+    "nomor_urut": "11",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-11/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-012",
+    "awalan": "PLT-",
+    "nomor_urut": "12",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-12/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-013",
+    "awalan": "PLT-",
+    "nomor_urut": "13",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-13/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-014",
+    "awalan": "PLT-",
+    "nomor_urut": "14",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-14/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-015",
+    "awalan": "PLT-",
+    "nomor_urut": "15",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-15/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-016",
+    "awalan": "PLT-",
+    "nomor_urut": "16",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-16/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-017",
+    "awalan": "PLT-",
+    "nomor_urut": "17",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-17/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-018",
+    "awalan": "PLT-",
+    "nomor_urut": "18",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-18/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-019",
+    "awalan": "PLT-",
+    "nomor_urut": "19",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-19/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-020",
+    "awalan": "PLT-",
+    "nomor_urut": "20",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-20/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-021",
+    "awalan": "PLT-",
+    "nomor_urut": "21",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-21/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-022",
+    "awalan": "PLT-",
+    "nomor_urut": "22",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-22/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-023",
+    "awalan": "PLT-",
+    "nomor_urut": "23",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-23/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-024",
+    "awalan": "PLT-",
+    "nomor_urut": "24",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-24/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-025",
+    "awalan": "PLT-",
+    "nomor_urut": "25",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-25/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-026",
+    "awalan": "PLT-",
+    "nomor_urut": "26",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-26/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Dibooking",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-027",
+    "awalan": "PLT-",
+    "nomor_urut": "27",
+    "kode_surat": "/MS/1/2026",
+    "nomor_lengkap": "PLT-27/MS/1/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-01-12",
+    "nama_pejabat": "",
+    "nip": "",
+    "jabatan_plt_plh": "",
+    "unit_kerja": "",
+    "pic_booking": "",
+    "keterangan": "",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  },
+  {
+    "id": "SK-028",
+    "awalan": "PLT-",
+    "nomor_urut": "28",
+    "kode_surat": "/MS/11/2026",
+    "nomor_lengkap": "PLT-28/MS/11/2026",
+    "jenis_sk": "SK Plt",
+    "status": "Terbit",
+    "tanggal_sk": "2026-11-13",
+    "nama_pejabat": "Andri Kurniawan Amarullah",
+    "nip": "199107282012061001",
+    "jabatan_plt_plh": "Plt. Kepala Subbagian Tata Usaha",
+    "unit_kerja": "Biro Umum",
+    "pic_booking": "",
+    "keterangan": "SK Plt Kepala Subbagian Tata Usaha",
+    "updated_at": "2026-11-16T08:00:00.000Z"
+  }
+];
+
+    let records = [];
+    let apiUrl = localStorage.getItem(STORAGE_KEY_API) || DEFAULT_API_URL;
+
+    // =========================================================================
+    // 2. INISIALISASI & SINKRONISASI DATA
+    // =========================================================================
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      document.getElementById("printDate").textContent = today.toLocaleDateString("id-ID", {
+        day: "2-digit", month: "long", year: "numeric"
+      });
+
+      updateConnectionUI();
+
+      if (apiUrl) {
+        syncFromServer();
+      } else {
+        const saved = localStorage.getItem(STORAGE_KEY_DATA);
+        if (saved) {
+          try {
+            records = JSON.parse(saved);
+          } catch (e) {
+            records = [...INITIAL_DATA];
+          }
+        } else {
+          records = [...INITIAL_DATA];
+          localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(records));
+        }
+        refreshAll();
+      }
+    });
+
+    function updateConnectionUI() {
+      const dot = document.getElementById("connectionDot");
+      const text = document.getElementById("connectionText");
+      if (apiUrl) {
+        dot.className = "w-2 h-2 rounded-full bg-emerald-400 animate-pulse";
+        text.textContent = "Terhubung Google Sheets";
+      } else {
+        dot.className = "w-2 h-2 rounded-full bg-amber-400";
+        text.textContent = "Mode Lokal (Belum Link Sheets)";
+      }
+    }
+
+    async function syncFromServer() {
+      if (!apiUrl) {
+        refreshAll();
+        showToast("Menggunakan data lokal browser.", "info");
+        return;
+      }
+      const icon = document.getElementById("refreshIcon");
+      icon.classList.add("animate-spin");
+      try {
+        const res = await fetch(apiUrl);
+        const json = await res.json();
+        if (json.status === "success" && Array.isArray(json.data)) {
+          records = json.data;
+          localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(records));
+          refreshAll();
+          showToast("Data berhasil disinkronkan dari Google Sheets.", "success");
+        } else {
+          throw new Error(json.message || "Gagal memuat data");
+        }
+      } catch (err) {
+        console.error(err);
+        const cached = localStorage.getItem(STORAGE_KEY_DATA);
+        records = cached ? JSON.parse(cached) : [...INITIAL_DATA];
+        refreshAll();
+        showToast("Gagal terhubung ke Apps Script, menampilkan cache lokal.", "error");
+      } finally {
+        icon.classList.remove("animate-spin");
+      }
+    }
+
+    async function sendToServer(payload) {
+      if (!apiUrl) return { status: "local" };
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      });
+      return await res.json();
+    }
+
+    // =========================================================================
+    // 3. KALKULASI NOMOR URUT BERIKUTNYA & STATISTIK
+    // =========================================================================
+    function getNextSequenceNumber() {
+      if (!records.length) return "1";
+      let maxNum = 0;
+      records.forEach(r => {
+        const raw = String(r.nomor_urut || "").trim();
+        const base = parseInt(raw.split(".")[0], 10);
+        if (!isNaN(base) && base > maxNum) maxNum = base;
+      });
+      return String(maxNum + 1);
+    }
+
+    function getDefaultKodeSurat(dateStr) {
+      const d = dateStr ? new Date(dateStr) : new Date();
+      const month = isNaN(d.getMonth()) ? (new Date().getMonth() + 1) : (d.getMonth() + 1);
+      const year = isNaN(d.getFullYear()) ? new Date().getFullYear() : d.getFullYear();
+      return `/MS/${month}/${year}`;
+    }
+
+    function refreshAll() {
+      // Sort records ascending by numeric nomor_urut
+      records.sort((a, b) => {
+        const na = parseFloat(String(a.nomor_urut || "0")) || 0;
+        const nb = parseFloat(String(b.nomor_urut || "0")) || 0;
+        return na - nb;
+      });
+
+      const nextNum = getNextSequenceNumber();
+      const defaultKode = getDefaultKodeSurat();
+      document.getElementById("statNextNum").textContent = nextNum;
+      document.getElementById("statNextPreview").textContent = `PLT-${nextNum}${defaultKode}`;
+
+      const total = records.length;
+      const pltCount = records.filter(r => r.jenis_sk === "SK Plt").length;
+      const plhCount = records.filter(r => r.jenis_sk === "SK Plh").length;
+      const terbitCount = records.filter(r => r.status === "Terbit").length;
+      const bookedItems = records.filter(r => r.status === "Dibooking");
+
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statPlt").textContent = pltCount;
+      document.getElementById("statPlh").textContent = plhCount;
+      document.getElementById("statTerbit").textContent = terbitCount;
+      document.getElementById("statBooking").textContent = bookedItems.length;
+
+      const banner = document.getElementById("bookingBanner");
+      if (bookedItems.length > 0) {
+        const nums = bookedItems.map(b => b.nomor_lengkap || `No. ${b.nomor_urut}`).join(", ");
+        document.getElementById("statBookingList").textContent = nums;
+        document.getElementById("bookingBannerText").textContent = `Nomor berikut masih berstatus Dibooking: ${nums}.`;
+        banner.classList.remove("hidden");
+      } else {
+        document.getElementById("statBookingList").textContent = "Tidak ada";
+        banner.classList.add("hidden");
+      }
+
+      renderTable();
+    }
+
+    // =========================================================================
+    // 4. RENDER TABEL & FILTER
+    // =========================================================================
+    function renderTable() {
+      const query = document.getElementById("searchInput").value.toLowerCase().trim();
+      const jenisFilter = document.getElementById("filterJenis").value;
+      const statusFilter = document.getElementById("filterStatus").value;
+
+      const filtered = records.filter(r => {
+        if (jenisFilter !== "ALL" && r.jenis_sk !== jenisFilter) return false;
+        if (statusFilter !== "ALL" && r.status !== statusFilter) return false;
+        if (!query) return true;
+        const hay = [
+          r.nomor_urut, r.nomor_lengkap, r.jenis_sk, r.status,
+          r.nama_pejabat, r.nip, r.jabatan_plt_plh, r.unit_kerja,
+          r.pic_booking, r.keterangan
+        ].join(" ").toLowerCase();
+        return hay.includes(query);
+      });
+
+      const tbody = document.getElementById("tableBody");
+      const emptyState = document.getElementById("emptyState");
+
+      if (!filtered.length) {
+        tbody.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      emptyState.classList.add("hidden");
+
+      // Show newest/highest numbers at top for easier operational access
+      const displayRows = [...filtered].reverse();
+
+      tbody.innerHTML = displayRows.map(r => {
+        const isBooked = r.status === "Dibooking";
+        const badgeStatus = isBooked
+          ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">Dibooking</span>`
+          : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">Terbit</span>`;
+
+        const badgeJenis = r.jenis_sk === "SK Plh"
+          ? `<span class="px-2 py-0.5 rounded text-xs font-semibold bg-cyan-50 text-cyan-800 border border-cyan-200">SK Plh</span>`
+          : `<span class="px-2 py-0.5 rounded text-xs font-semibold bg-indigo-50 text-indigo-800 border border-indigo-200">SK Plt</span>`;
+
+        const rowBg = isBooked ? "bg-amber-50/40 hover:bg-amber-50/80" : "hover:bg-slate-50";
+
+        return `
+          <tr class="${rowBg} transition">
+            <td class="py-3 px-3.5 text-center font-mono-code font-bold text-slate-700">${escapeHtml(r.nomor_urut)}</td>
+            <td class="py-3 px-3.5">
+              <div class="flex items-center gap-2">
+                <span class="font-mono-code font-bold text-blue-950 text-xs sm:text-sm">${escapeHtml(r.nomor_lengkap)}</span>
+                <button onclick="copyNomor('${escapeHtml(r.nomor_lengkap)}')" title="Salin Nomor SK" class="text-slate-400 hover:text-blue-700 p-1 rounded no-print cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                </button>
+              </div>
+            </td>
+            <td class="py-3 px-3.5 text-center">${badgeJenis}</td>
+            <td class="py-3 px-3.5 text-center">${badgeStatus}</td>
+            <td class="py-3 px-3.5 text-xs text-slate-600 font-mono-code">${escapeHtml(r.tanggal_sk || "-")}</td>
+            <td class="py-3 px-3.5">
+              ${r.nama_pejabat
+                ? `<div class="font-semibold text-slate-900">${escapeHtml(r.nama_pejabat)}</div>
+                   <div class="text-xs font-mono-code text-slate-500">${escapeHtml(r.nip || "-")}</div>`
+                : `<span class="text-xs italic text-slate-400">Belum diisi</span>`
+              }
+            </td>
+            <td class="py-3 px-3.5">
+              <div class="text-slate-800 font-medium text-xs sm:text-sm">${escapeHtml(r.jabatan_plt_plh || "-")}</div>
+              <div class="text-xs text-slate-500">${escapeHtml(r.unit_kerja || "")}</div>
+            </td>
+            <td class="py-3 px-3.5">
+              ${r.pic_booking ? `<div class="text-xs font-semibold text-slate-700">PIC: ${escapeHtml(r.pic_booking)}</div>` : ""}
+              <div class="text-xs text-slate-500 line-clamp-2">${escapeHtml(r.keterangan || "-")}</div>
+            </td>
+            <td class="py-3 px-3.5 text-right no-print">
+              <div class="inline-flex items-center gap-1">
+                ${isBooked
+                  ? `<button onclick="openModal('complete', '${escapeHtml(r.id)}')" class="px-2.5 py-1 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold cursor-pointer" title="Lengkapi & Terbitkan SK">Terbitkan</button>`
+                  : `<button onclick="openModal('edit', '${escapeHtml(r.id)}')" class="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium cursor-pointer">Edit</button>`
+                }
+                <button onclick="deleteRecord('${escapeHtml(r.id)}')" class="p-1.5 rounded-md text-slate-400 hover:text-red-600 hover:bg-red-50 cursor-pointer" title="Hapus">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function filterByStatus(status) {
+      document.getElementById("filterStatus").value = status;
+      renderTable();
+    }
+
+    function resetFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterJenis").value = "ALL";
+      document.getElementById("filterStatus").value = "ALL";
+      renderTable();
+    }
+
+    // =========================================================================
+    // 5. MODAL TAMBAH / BOOKING / EDIT
+    // =========================================================================
+    function openModal(mode, id = null) {
+      const modal = document.getElementById("skModal");
+      const todayISO = new Date().toISOString().slice(0, 10);
+
+      if (mode === "create") {
+        document.getElementById("modalTitle").textContent = "Tambah / Booking Nomor SK Baru";
+        document.getElementById("editId").value = "";
+        document.getElementById("formJenis").value = "SK Plt";
+        document.getElementById("formTanggal").value = todayISO;
+        document.getElementById("formAwalan").value = "PLT-";
+        document.getElementById("formNomorUrut").value = getNextSequenceNumber();
+        document.getElementById("formKodeSurat").value = getDefaultKodeSurat(todayISO);
+        document.getElementById("formNamaPejabat").value = "";
+        document.getElementById("formNip").value = "";
+        document.getElementById("formJabatan").value = "";
+        document.getElementById("formUnitKerja").value = "";
+        document.getElementById("formPic").value = "";
+        document.getElementById("formKeterangan").value = "";
+        setFormStatus("Terbit");
+      } else {
+        const item = records.find(x => String(x.id) === String(id));
+        if (!item) return;
+        document.getElementById("modalTitle").textContent = mode === "complete"
+          ? `Lengkapi & Terbitkan Nomor ${item.nomor_lengkap}`
+          : `Edit Data Nomor ${item.nomor_lengkap}`;
+        document.getElementById("editId").value = item.id;
+        document.getElementById("formJenis").value = item.jenis_sk || "SK Plt";
+        document.getElementById("formTanggal").value = item.tanggal_sk || todayISO;
+        document.getElementById("formAwalan").value = item.awalan || (item.jenis_sk === "SK Plh" ? "PLH-" : "PLT-");
+        document.getElementById("formNomorUrut").value = item.nomor_urut || "";
+        document.getElementById("formKodeSurat").value = item.kode_surat || getDefaultKodeSurat(todayISO);
+        document.getElementById("formNamaPejabat").value = item.nama_pejabat || "";
+        document.getElementById("formNip").value = item.nip || "";
+        document.getElementById("formJabatan").value = item.jabatan_plt_plh || "";
+        document.getElementById("formUnitKerja").value = item.unit_kerja || "";
+        document.getElementById("formPic").value = item.pic_booking || "";
+        document.getElementById("formKeterangan").value = item.keterangan || "";
+        setFormStatus(mode === "complete" ? "Terbit" : (item.status || "Terbit"));
+      }
+
+      updateNumberPreview();
+      modal.classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("skModal").classList.add("hidden");
+    }
+
+    function setFormStatus(status) {
+      document.getElementById("formStatus").value = status;
+      const btnT = document.getElementById("btnModeTerbit");
+      const btnB = document.getElementById("btnModeBooking");
+      const btnSubmit = document.getElementById("btnSubmitForm");
+      const reqPejabat = document.getElementById("reqPejabat");
+      const reqPic = document.getElementById("reqPic");
+
+      if (status === "Terbit") {
+        btnT.className = "py-2 px-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 cursor-pointer bg-emerald-600 text-white shadow-xs";
+        btnB.className = "py-2 px-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:text-slate-900";
+        btnSubmit.textContent = "Simpan & Terbitkan SK";
+        btnSubmit.className = "px-5 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition cursor-pointer";
+        reqPejabat.classList.remove("hidden");
+        reqPic.classList.add("hidden");
+      } else {
+        btnB.className = "py-2 px-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 cursor-pointer bg-amber-500 text-slate-950 shadow-xs";
+        btnT.className = "py-2 px-3 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 cursor-pointer text-slate-600 hover:text-slate-900";
+        btnSubmit.textContent = "Booking Nomor Ini";
+        btnSubmit.className = "px-5 py-2 text-sm font-semibold text-slate-950 bg-amber-400 hover:bg-amber-300 rounded-lg shadow-sm transition cursor-pointer";
+        reqPejabat.classList.add("hidden");
+        reqPic.classList.remove("hidden");
+      }
+    }
+
+    function onJenisChange() {
+      const jenis = document.getElementById("formJenis").value;
+      const awalanInput = document.getElementById("formAwalan");
+      if (jenis === "SK Plh" && (awalanInput.value === "PLT-" || !awalanInput.value)) {
+        awalanInput.value = "PLH-";
+      } else if (jenis === "SK Plt" && (awalanInput.value === "PLH-" || !awalanInput.value)) {
+        awalanInput.value = "PLT-";
+      }
+      updateNumberPreview();
+    }
+
+    function onDateChange() {
+      const dateVal = document.getElementById("formTanggal").value;
+      const kodeInput = document.getElementById("formKodeSurat");
+      if (/^\/MS\/\d{1,2}\/\d{4}$/.test(kodeInput.value.trim())) {
+        kodeInput.value = getDefaultKodeSurat(dateVal);
+        updateNumberPreview();
+      }
+    }
+
+    function applyKodeTemplate(tpl) {
+      document.getElementById("formKodeSurat").value = tpl;
+      updateNumberPreview();
+    }
+
+    function updateNumberPreview() {
+      const awalan = document.getElementById("formAwalan").value.trim();
+      const urut = document.getElementById("formNomorUrut").value.trim();
+      const kode = document.getElementById("formKodeSurat").value.trim();
+      const full = `${awalan}${urut}${kode}`;
+      document.getElementById("previewNomorLengkap").textContent = full || "-";
+
+      const editId = document.getElementById("editId").value;
+      const isDup = records.some(r => String(r.id) !== String(editId) && String(r.nomor_urut).trim() === urut);
+      const warn = document.getElementById("dupWarning");
+      if (isDup && urut !== "") {
+        warn.classList.remove("hidden");
+      } else {
+        warn.classList.add("hidden");
+      }
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const editId = document.getElementById("editId").value;
+      const status = document.getElementById("formStatus").value;
+      const awalan = document.getElementById("formAwalan").value.trim();
+      const nomor_urut = document.getElementById("formNomorUrut").value.trim();
+      const kode_surat = document.getElementById("formKodeSurat").value.trim();
+      const nomor_lengkap = `${awalan}${nomor_urut}${kode_surat}`;
+      const nama_pejabat = document.getElementById("formNamaPejabat").value.trim();
+      const pic_booking = document.getElementById("formPic").value.trim();
+
+      if (!nomor_urut) {
+        showToast("Nomor urut wajib diisi!", "error");
+        return;
+      }
+
+      const isDup = records.some(r => String(r.id) !== String(editId) && String(r.nomor_urut).trim() === nomor_urut);
+      if (isDup) {
+        showToast(`Nomor urut ${nomor_urut} sudah terdaftar! Gunakan nomor lain atau sisipan (misal ${nomor_urut}.1).`, "error");
+        return;
+      }
+
+      if (status === "Terbit" && !nama_pejabat) {
+        showToast("Nama pejabat wajib diisi untuk SK yang langsung diterbitkan.", "error");
+        return;
+      }
+      if (status === "Dibooking" && !pic_booking) {
+        showToast("Isi Nama Pembooking / PIC agar jelas siapa yang memesan nomor.", "error");
+        return;
+      }
+
+      const payloadData = {
+        id: editId || ("SK-" + Date.now()),
+        awalan,
+        nomor_urut,
+        kode_surat,
+        nomor_lengkap,
+        jenis_sk: document.getElementById("formJenis").value,
+        status,
+        tanggal_sk: document.getElementById("formTanggal").value,
+        nama_pejabat,
+        nip: document.getElementById("formNip").value.trim(),
+        jabatan_plt_plh: document.getElementById("formJabatan").value.trim(),
+        unit_kerja: document.getElementById("formUnitKerja").value.trim(),
+        pic_booking,
+        keterangan: document.getElementById("formKeterangan").value.trim(),
+        updated_at: new Date().toISOString()
+      };
+
+      const btn = document.getElementById("btnSubmitForm");
+      btn.disabled = true;
+      btn.classList.add("opacity-60");
+
+      try {
+        if (apiUrl) {
+          const res = await sendToServer({
+            action: editId ? "update" : "create",
+            data: payloadData
+          });
+          if (res.status !== "success") {
+            showToast(res.message || "Gagal menyimpan ke Google Sheets", "error");
+            return;
+          }
+        }
+
+        if (editId) {
+          const idx = records.findIndex(r => String(r.id) === String(editId));
+          if (idx !== -1) records[idx] = payloadData;
+        } else {
+          records.push(payloadData);
+        }
+
+        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(records));
+        closeModal();
+        refreshAll();
+        showToast(
+          status === "Dibooking"
+            ? `Nomor ${nomor_lengkap} berhasil dibooking!`
+            : `Nomor ${nomor_lengkap} berhasil disimpan!`,
+          "success"
+        );
+      } catch (err) {
+        console.error(err);
+        showToast("Terjadi kesalahan koneksi saat menyimpan.", "error");
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove("opacity-60");
+      }
+    }
+
+    async function deleteRecord(id) {
+      const item = records.find(r => String(r.id) === String(id));
+      if (!item) return;
+      if (!confirm(`Hapus data nomor ${item.nomor_lengkap}?`)) return;
+
+      try {
+        if (apiUrl) {
+          const res = await sendToServer({ action: "delete", id: item.id });
+          if (res.status !== "success") {
+            showToast(res.message || "Gagal menghapus di Google Sheets", "error");
+            return;
+          }
+        }
+        records = records.filter(r => String(r.id) !== String(id));
+        localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(records));
+        refreshAll();
+        showToast(`Nomor ${item.nomor_lengkap} telah dihapus.`, "info");
+      } catch (err) {
+        showToast("Gagal menghapus data.", "error");
+      }
+    }
+
+    // =========================================================================
+    // 6. SETTINGS MODAL, COPY & EXPORT CSV
+    // =========================================================================
+    function openSettingsModal() {
+      document.getElementById("inputApiUrl").value = apiUrl;
+      document.getElementById("settingsModal").classList.remove("hidden");
+    }
+
+    function closeSettingsModal() {
+      document.getElementById("settingsModal").classList.add("hidden");
+    }
+
+    function saveApiUrl() {
+      const val = document.getElementById("inputApiUrl").value.trim();
+      if (!val.startsWith("https://script.google.com/")) {
+        showToast("URL harus diawali https://script.google.com/...", "error");
+        return;
+      }
+      apiUrl = val;
+      localStorage.setItem(STORAGE_KEY_API, apiUrl);
+      updateConnectionUI();
+      closeSettingsModal();
+      syncFromServer();
+    }
+
+    function clearApiUrl() {
+      apiUrl = "";
+      localStorage.removeItem(STORAGE_KEY_API);
+      document.getElementById("inputApiUrl").value = "";
+      updateConnectionUI();
+      closeSettingsModal();
+      showToast("Koneksi Google Sheets diputuskan (kembali ke mode lokal).", "info");
+    }
+
+    function copyNomor(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`Disalin: ${text}`, "success");
+      });
+    }
+
+    function exportCSV() {
+      const headers = [
+        "id", "awalan", "nomor_urut", "kode_surat", "nomor_lengkap",
+        "jenis_sk", "status", "tanggal_sk", "nama_pejabat", "nip",
+        "jabatan_plt_plh", "unit_kerja", "pic_booking", "keterangan", "updated_at"
+      ];
+      const csvRows = [headers.join(",")];
+      records.forEach(r => {
+        const row = headers.map(h => {
+          const val = String(r[h] ?? "").replace(/"/g, '""');
+          return `"${val}"`;
+        });
+        csvRows.push(row.join(","));
+      });
+      const blob = new Blob(["\uFEFF" + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Agenda_SK_Plt_Plh_OSDM_${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    let toastTimer;
+    function showToast(msg, type = "info") {
+      const toast = document.getElementById("toast");
+      const box = document.getElementById("toastBox");
+      document.getElementById("toastMsg").textContent = msg;
+
+      box.className = "px-4 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2.5 " +
+        (type === "success" ? "bg-emerald-700 text-white" :
+         type === "error"   ? "bg-red-700 text-white" :
+                              "bg-slate-900 text-white");
+
+      toast.classList.remove("hidden");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.add("hidden"), 3200);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>
